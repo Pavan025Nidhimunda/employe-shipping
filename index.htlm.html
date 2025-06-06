@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shipping Calculator</title>
+</head>
+<body>
+  <h1>Shipping Cost Calculator</h1>
+  <form id="shippingForm">
+    <input type="number" id="weight" placeholder="Weight (kg)" required />
+    <input type="number" id="distance" placeholder="Distance (km)" required />
+    <select id="speed">
+      <option value="standard">Standard</option>
+      <option value="express">Express</option>
+    </select>
+    <button type="submit">Calculate</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('shippingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const weight = document.getElementById('weight').value;
+      const distance = document.getElementById('distance').value;
+      const speed = document.getElementById('speed').value;
+
+      const response = await fetch('http://localhost:5000/api/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ weight, distance, speed }),
+      });
+
+      const result = await response.json();
+      document.getElementById('result').innerHTML = `
+        <p>Estimated Cost: ₹${result.cost}</p>
+        <p>Estimated Delivery: ${result.estimatedDays} days</p>
+      `;
+    });
+  </script>
+</body>
+</html>
